@@ -1,5 +1,7 @@
 # CODSOFT
 Internship
+
+TASK: 3
 import java.util.Scanner;
 // Step 4: BankAccount class
 class BankAccount {
@@ -115,7 +117,7 @@ public class ATM {
 }
 
 
-Task: 
+Task : 1
 
 import java.util.Scanner;
 import java.util.Random;
