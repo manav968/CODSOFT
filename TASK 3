@@ -1,0 +1,77 @@
+
+import java.util.*;
+
+public class QuizApplication {
+    static class Question {
+        String question;
+        String[] options;
+        char correctOption;
+
+        Question(String question, String[] options, char correctOption) {
+            this.question = question;
+            this.options = options;
+            this.correctOption = correctOption;
+        }
+    }
+
+    static List<Question> questions = new ArrayList<>();
+    static int score = 0;
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        loadQuestions();
+        System.out.println("Welcome to the Java Quiz!\n");
+
+        for (int i = 0; i < questions.size(); i++) {
+            Question q = questions.get(i);
+            askQuestion(q, i + 1);
+        }
+
+        System.out.println("\nQuiz Completed!");
+        System.out.println("Your Score: " + score + "/" + questions.size());
+    }
+
+    public static void loadQuestions() {
+        questions.add(new Question("Which keyword is used to create a subclass in Java?",
+                new String[]{"A. this", "B. import", "C. extends", "D. implements"}, 'C'));
+        questions.add(new Question("What is the size of an int variable in Java?",
+                new String[]{"A. 4 bytes", "B. 2 bytes", "C. 1 byte", "D. 8 bytes"}, 'A'));
+        questions.add(new Question("What does JVM stand for?",
+                new String[]{"A. Java Virtual Machine", "B. Java Very Much", "C. Java Verified Method", "D. Java Void Main"}, 'A'));
+    }
+
+    public static void askQuestion(Question q, int number) {
+        System.out.println("Q" + number + ": " + q.question);
+        for (String opt : q.options) {
+            System.out.println(opt);
+        }
+
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            public void run() {
+                System.out.println("\nTime's up! Moving to the next question.\n");
+                synchronized (scanner) {
+                    scanner.notify();
+                }
+            }
+        };
+
+        timer.schedule(task, 10000); // 10 seconds per question
+
+        String answer = "";
+        synchronized (scanner) {
+            System.out.print("Enter your answer (A/B/C/D): ");
+            if (scanner.hasNextLine()) {
+                answer = scanner.nextLine().trim().toUpperCase();
+                timer.cancel();
+            }
+        }
+
+        if (answer.length() == 1 && answer.charAt(0) == q.correctOption) {
+            score++;
+            System.out.println("Correct!\n");
+        } else {
+            System.out.println("Incorrect! Correct answer was: " + q.correctOption + "\n");
+        }
+    }
+}
